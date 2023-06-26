@@ -1,0 +1,37 @@
+versions:
+  changelog: "2.1.0"
+  consensus: "0.2.0"
+  gradle: "8.2"
+  intellij: "1.14.2"
+  kotlin: "1.8.22"
+  kotlinx:
+    serialization: "1.5.1"
+  spotless: "6.19.0"
+
+repositories:
+  mavenCentral:
+  gradlePluginPortal:
+
+plugins:
+  gradlePluginPortal:
+    com.diffplug.spotless: ${versions.spotless}
+    org.jetbrains.changelog: ${versions.changelog}
+    org.jetbrains.intellij: ${versions.intellij}
+    org.jetbrains.kotlin.jvm: ${versions.kotlin}
+    org.jetbrains.kotlin.plugin.serialization: ${versions.kotlin}
+  mavenCentral:
+    me.omico.consensus.api: ${versions.consensus}
+    me.omico.consensus.git: ${versions.consensus}
+    me.omico.consensus.publishing: ${versions.consensus}
+    me.omico.consensus.spotless: ${versions.consensus}
+
+dependencies:
+  mavenCentral:
+    me.omico.consensus:
+      consensus-dsl:
+        alias: me.omico.consensus.dsl
+        version: ${versions.consensus}
+    org.jetbrains.kotlinx:
+      kotlinx-serialization-json:
+        alias: kotlinx.serialization.json
+        version: ${versions.kotlinx.serialization}

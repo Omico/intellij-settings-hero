@@ -1,0 +1,21 @@
+<idea-plugin>
+    <id>me.omico.intellij.settingsHero</id>
+    <name>Settings Hero</name>
+    <vendor>Omico</vendor>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.vcs</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!--suppress PluginXmlValidity -->
+        <applicationInitializedListener implementation="me.omico.intellij.settingsHero.SettingsHeroInitializer" />
+        <applicationConfigurable
+            id="settings.hero"
+            key="settingsHero.title"
+            bundle="messages.SettingsHeroBundle"
+            instance="me.omico.intellij.settingsHero.SettingsHeroConfigurable"
+            groupId="root"
+            groupWeight="5"
+        />
+    </extensions>
+</idea-plugin>
