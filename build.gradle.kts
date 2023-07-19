@@ -15,7 +15,7 @@ repositories {
 }
 
 group = "me.omico.intellij.settingsHero"
-version = "0.1.0"
+version = "0.2.0-SNAPSHOT"
 
 kotlin {
     jvmToolchain(17)
