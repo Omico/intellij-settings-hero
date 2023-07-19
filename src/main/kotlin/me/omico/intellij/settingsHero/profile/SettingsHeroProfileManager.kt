@@ -59,6 +59,9 @@ object SettingsHeroProfileManager {
     }
 
     fun saveTemporaryProfiles() {
+        persistenceProfiles.names.toSet()
+            .minus(temporaryProfiles.names.toSet())
+            .forEach(localRepository::remove)
         persistenceProfiles.clearAndAddAll(temporaryProfiles)
         localRepository.saveProfiles(temporaryProfiles)
     }

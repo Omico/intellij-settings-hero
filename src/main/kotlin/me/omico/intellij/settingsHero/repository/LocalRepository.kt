@@ -16,6 +16,7 @@ import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.Path
 import kotlin.io.path.copyTo
 import kotlin.io.path.createDirectories
+import kotlin.io.path.deleteRecursively
 import kotlin.io.path.invariantSeparatorsPathString
 import kotlin.io.path.readText
 import kotlin.io.path.walk
@@ -57,6 +58,14 @@ data class LocalRepository(
         rules: Set<String>,
     ): Unit =
         profileDirectory(profileName).saveSettings(patternCache, rules)
+
+    @OptIn(ExperimentalPathApi::class)
+    fun remove(profileName: String) {
+        profileDirectory(profileName).deleteRecursively()
+        val currentPlugins = loadPlugins().toMutableMap()
+        currentPlugins.remove(profileName)
+        savePlugins(currentPlugins)
+    }
 }
 
 lateinit var localRepository: LocalRepository

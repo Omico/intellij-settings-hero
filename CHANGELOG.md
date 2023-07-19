@@ -6,6 +6,8 @@
 
 ### Changed
 
+- Clean up removed profiles
+
 ### Deprecated
 
 ### Removed
