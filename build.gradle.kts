@@ -39,8 +39,10 @@ changelog {
 }
 
 tasks {
+    patchChangelog {
+        onlyIf { !project.version.toString().endsWith("-SNAPSHOT") }
+    }
     patchPluginXml {
-        dependsOn(patchChangelog)
         sinceBuild.set("231")
         untilBuild.set("231.*")
         pluginDescription.set(
