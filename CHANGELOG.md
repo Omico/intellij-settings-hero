@@ -11,6 +11,7 @@
 ### Removed
 
 ### Fixed
+- Fix rules is empty at the first time
 
 ### Security
 

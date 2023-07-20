@@ -18,7 +18,7 @@ object SettingsHeroProfileManager {
     }
 
     fun temporaryProfile(profileName: String): SettingsHeroProfile =
-        temporaryProfiles.firstOrNull { it.name == profileName } ?: SettingsHeroProfile.Empty
+        temporaryProfiles.firstOrNull { it.name == profileName } ?: SettingsHeroProfile.Default
 
     fun newTemporaryProfile(name: String = "New Profile"): SettingsHeroProfile {
         val newProfileName = findAvailableNewName(name)
