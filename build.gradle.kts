@@ -68,6 +68,9 @@ tasks {
     }
     spotlessFreshmark {
         dependsOn(patchChangelog)
+        doFirst {
+            file("CHANGELOG.md").writeText(changelog.render())
+        }
     }
     runIde {
         autoReloadPlugins.set(true)
