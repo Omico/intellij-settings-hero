@@ -32,7 +32,6 @@ intellij {
 }
 
 changelog {
-    groups.set(listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"))
     repositoryUrl.set("https://github.com/Omico/intellij-settings-hero")
     version.set(project.version.toString())
     path.set(file("CHANGELOG.md").canonicalPath)
