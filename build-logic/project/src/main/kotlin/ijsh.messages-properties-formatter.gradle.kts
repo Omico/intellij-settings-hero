@@ -1,5 +1,3 @@
-import org.gradle.internal.impldep.com.google.common.io.Files.isFile
-
 file("src/main/resources/messages").walk()
     .maxDepth(1)
     .filter(File::isFile)
