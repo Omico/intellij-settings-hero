@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 typealias SettingsHeroProfiles = List<SettingsHeroProfile>
 
-val SettingsHeroProfiles.names
+val SettingsHeroProfiles.names: List<String>
     get() = map(SettingsHeroProfile::name)
 
 @Serializable
@@ -23,9 +23,7 @@ data class SettingsHeroProfile(
         )
 
         val Default = SettingsHeroProfile()
-
-        val Empty = SettingsHeroProfile(name = "Empty", rules = emptySet())
     }
 }
 
-internal val DefaultSettingsHeroProfiles = listOf(SettingsHeroProfile.Default)
+internal val DefaultSettingsHeroProfiles: List<SettingsHeroProfile> = listOf(SettingsHeroProfile.Default)
