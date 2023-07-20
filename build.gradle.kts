@@ -64,6 +64,9 @@ tasks {
             file("CHANGELOG.md").writeText(changelog.render())
         }
     }
+    buildPlugin {
+        archiveBaseName.set("SettingsHero")
+    }
     runIde {
         autoReloadPlugins.set(true)
     }
