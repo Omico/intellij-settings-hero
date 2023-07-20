@@ -5,6 +5,7 @@ import com.intellij.openapi.vcs.changes.ignore.lang.Syntax
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import me.omico.intellij.settingsHero.plugin.PluginInfo
+import me.omico.intellij.settingsHero.profile.SettingsHeroProfileManager
 import me.omico.intellij.settingsHero.profile.SettingsHeroProfiles
 import me.omico.intellij.settingsHero.settingsHeroSettings
 import me.omico.intellij.settingsHero.utility.clearDirectory
@@ -55,9 +56,10 @@ data class LocalRepository(
     fun saveSettings(
         profileName: String,
         patternCache: PatternCache,
-        rules: Set<String>,
-    ): Unit =
-        profileDirectory(profileName).saveSettings(patternCache, rules)
+    ) {
+        val profile = SettingsHeroProfileManager.profiles.find { it.name == profileName } ?: return
+        profileDirectory(profileName).saveSettings(patternCache, profile.rules)
+    }
 
     @OptIn(ExperimentalPathApi::class)
     fun remove(profileName: String) {

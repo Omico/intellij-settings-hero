@@ -4,7 +4,6 @@ package me.omico.intellij.settingsHero
 
 import com.intellij.ide.AppLifecycleListener
 import com.intellij.ide.ApplicationInitializedListener
-import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.vcs.changes.ignore.cache.PatternCache
@@ -13,7 +12,6 @@ import me.omico.intellij.settingsHero.plugin.plugins
 import me.omico.intellij.settingsHero.profile.SettingsHeroProfileManager
 import me.omico.intellij.settingsHero.repository.localRepository
 import me.omico.intellij.settingsHero.repository.refreshLocalRepository
-import me.omico.intellij.settingsHero.ui.profile.rulesProperty
 import me.omico.intellij.settingsHero.utility.messageBus
 
 lateinit var defaultProject: Project
@@ -34,18 +32,10 @@ internal class SettingsHeroInitializer : ApplicationInitializedListener {
             AppLifecycleListener.TOPIC,
             object : AppLifecycleListener {
                 override fun appClosing() {
-                    ProgressManager.getInstance().runProcessWithProgressSynchronously(
-                        {
-                            if (!settingsHeroSettings.enabled) return@runProcessWithProgressSynchronously
-                            val currentProfileName = settingsHeroSettings.currentProfile
-                                .ifBlank { return@runProcessWithProgressSynchronously }
-                            localRepository.saveSettings(currentProfileName, patternCache, rulesProperty.get())
-                            localRepository.savePlugins(currentProfileName, plugins)
-                        },
-                        message("settingsHero.title"),
-                        false,
-                        null,
-                    )
+                    if (!settingsHeroSettings.enabled) return
+                    val currentProfileName = settingsHeroSettings.currentProfile.ifBlank { return }
+                    localRepository.saveSettings(currentProfileName, patternCache)
+                    localRepository.savePlugins(currentProfileName, plugins)
                 }
             },
         )

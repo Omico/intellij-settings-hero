@@ -12,6 +12,7 @@
 
 ### Fixed
 - Fix rules is empty at the first time
+- Fix settings do not saved
 
 ### Security
 
