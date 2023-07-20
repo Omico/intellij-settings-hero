@@ -54,17 +54,10 @@ tasks {
                 }
             },
         )
-        changeNotes.set(
-            changelog.renderItem(
-                item = run {
-                    changelog
-                        .getLatest()
-                        .withHeader(false)
-                        .withEmptySections(false)
-                },
-                outputType = Changelog.OutputType.HTML,
-            ),
-        )
+        changelog.getAll().values
+            .filterNot(Changelog.Item::isUnreleased)
+            .joinToString("\n") { item -> changelog.renderItem(item = item, outputType = Changelog.OutputType.HTML) }
+            .let(changeNotes::set)
     }
     spotlessFreshmark {
         dependsOn(patchChangelog)
