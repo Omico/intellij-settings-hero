@@ -27,7 +27,7 @@ dependencies {
 
 intellij {
     pluginName.set("Settings Hero")
-    version.set("2023.1.3")
+    version.set("2023.1.4")
     plugins.set(listOf("Git4Idea"))
 }
 
@@ -69,5 +69,8 @@ tasks {
     }
     runIde {
         autoReloadPlugins.set(true)
+    }
+    runPluginVerifier {
+        ideVersions.set(listOf("2023.1.4"))
     }
 }
