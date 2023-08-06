@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- Support IntelliJ Platform 2023.2
 
 ### Changed
 

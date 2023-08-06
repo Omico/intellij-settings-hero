@@ -43,7 +43,7 @@ tasks {
     }
     patchPluginXml {
         sinceBuild.set("231")
-        untilBuild.set("231.*")
+        untilBuild.set("232.*")
         pluginDescription.set(
             providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
                 val start = "<!-- Plugin description -->"
@@ -71,6 +71,6 @@ tasks {
         autoReloadPlugins.set(true)
     }
     runPluginVerifier {
-        ideVersions.set(listOf("2023.1.4"))
+        ideVersions.set(listOf("2023.1.4", "2023.2"))
     }
 }
