@@ -14,6 +14,7 @@ internal class SettingsHeroConfigurable : BoundSearchableConfigurable(
     helpTopic = message("settingsHero.title"),
 ) {
     override fun createPanel(): DialogPanel = panel {
+        onApply(::saveAll)
         status()
         repository()
         profile(parentDisposable = disposable!!)

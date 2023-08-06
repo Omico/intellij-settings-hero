@@ -31,13 +31,15 @@ internal class SettingsHeroInitializer : ApplicationInitializedListener {
         messageBus.connect().subscribe(
             AppLifecycleListener.TOPIC,
             object : AppLifecycleListener {
-                override fun appClosing() {
-                    if (!settingsHeroSettings.enabled) return
-                    val currentProfileName = settingsHeroSettings.currentProfile.ifBlank { return }
-                    localRepository.saveSettings(currentProfileName, patternCache)
-                    localRepository.savePlugins(currentProfileName, plugins)
-                }
+                override fun appClosing(): Unit = saveAll()
             },
         )
     }
+}
+
+internal fun saveAll() {
+    if (!settingsHeroSettings.enabled) return
+    val currentProfileName = settingsHeroSettings.currentProfile.ifBlank { return }
+    localRepository.saveSettings(currentProfileName, patternCache)
+    localRepository.savePlugins(currentProfileName, plugins)
 }

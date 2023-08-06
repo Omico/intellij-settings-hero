@@ -6,6 +6,7 @@
 - Support IntelliJ Platform 2023.2
 
 ### Changed
+- Save settings immediately after applied
 
 ### Deprecated
 
