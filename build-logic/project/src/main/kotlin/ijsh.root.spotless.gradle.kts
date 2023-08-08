@@ -10,7 +10,9 @@ consensus {
     spotless {
         freshmark()
         gradleProperties()
-        kotlin()
+        kotlin(
+            licenseHeaderFile = rootProject.file("spotless/copyright.kt"),
+        )
         kotlinGradle()
     }
 }
