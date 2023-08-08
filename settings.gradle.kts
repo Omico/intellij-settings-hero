@@ -1,11 +1,9 @@
-rootProject.name = "intellij-settings-hero"
+rootProject.name = "ijsh-root"
 
 pluginManagement {
-    includeBuild("build-logic/gradm")
+    includeBuild("build-logic/initialization")
 }
 
 plugins {
-    id("ijsh.gradm")
+    id("ijsh")
 }
-
-includeBuild("build-logic/project")

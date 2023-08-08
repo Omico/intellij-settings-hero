@@ -1,4 +1,4 @@
-rootProject.name = "ijsh-project"
+rootProject.name = "ijsh-initialization"
 
 pluginManagement {
     includeBuild("../gradm")

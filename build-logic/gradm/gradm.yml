@@ -6,7 +6,9 @@ versions:
   kotlin: "1.8.22"
   kotlinx:
     serialization: "1.5.1"
-  spotless: "6.19.0"
+  plugins:
+    gradle.enterprise: "3.14.1"
+    spotless: "6.19.0"
 
 repositories:
   mavenCentral:
@@ -14,7 +16,8 @@ repositories:
 
 plugins:
   gradlePluginPortal:
-    com.diffplug.spotless: ${versions.spotless}
+    com.diffplug.spotless: ${versions.plugins.spotless}
+    com.gradle.enterprise: ${versions.plugins.gradle.enterprise}
     org.jetbrains.changelog: ${versions.changelog}
     org.jetbrains.intellij: ${versions.intellij}
     org.jetbrains.kotlin.jvm: ${versions.kotlin}
