@@ -7,8 +7,6 @@
     <depends>com.intellij.modules.vcs</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!--suppress PluginXmlValidity -->
-        <applicationInitializedListener implementation="me.omico.intellij.settingsHero.SettingsHeroInitializer" />
         <applicationConfigurable
             id="settings.hero"
             key="settingsHero.title"
@@ -18,4 +16,11 @@
             groupWeight="5"
         />
     </extensions>
+
+    <applicationListeners>
+        <listener
+            class="me.omico.intellij.settingsHero.SettingsHeroLifecycleListener"
+            topic="com.intellij.ide.AppLifecycleListener"
+        />
+    </applicationListeners>
 </idea-plugin>
