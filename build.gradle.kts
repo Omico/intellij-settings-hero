@@ -64,6 +64,9 @@ tasks {
             file("CHANGELOG.md").writeText(changelog.render())
         }
     }
+    buildSearchableOptions {
+        enabled = "runPluginVerifier" !in gradle.startParameter.taskNames
+    }
     buildPlugin {
         archiveBaseName.set("SettingsHero")
     }
