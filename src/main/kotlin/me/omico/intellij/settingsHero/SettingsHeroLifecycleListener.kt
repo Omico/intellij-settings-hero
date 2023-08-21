@@ -23,7 +23,11 @@ internal class SettingsHeroLifecycleListener : AppLifecycleListener {
         SettingsHeroProfileManager.load()
     }
 
-    override fun appClosing(): Unit = saveAll()
+    override fun appClosing() {
+        // Skipping because the appFrameCreated() function will not be called when buildSearchableOptions.
+        if (!::patternCache.isInitialized) return
+        saveAll()
+    }
 }
 
 internal lateinit var defaultProject: Project
