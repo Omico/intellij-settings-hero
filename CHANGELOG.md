@@ -3,10 +3,8 @@
 ## [Unreleased]
 
 ### Added
-- Support IntelliJ Platform 2023.2
 
 ### Changed
-- Save settings immediately after applied
 
 ### Deprecated
 
@@ -15,6 +13,14 @@
 ### Fixed
 
 ### Security
+
+## [0.4.0] - 2023-08-21
+
+### Added
+- Support IntelliJ Platform 2023.2
+
+### Changed
+- Save settings immediately after applied
 
 ## [0.3.0] - 2023-07-20
 
@@ -32,7 +38,8 @@
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/Omico/intellij-settings-hero/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/Omico/intellij-settings-hero/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/Omico/intellij-settings-hero/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/Omico/intellij-settings-hero/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/Omico/intellij-settings-hero/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/Omico/intellij-settings-hero/commits/v0.1.0
