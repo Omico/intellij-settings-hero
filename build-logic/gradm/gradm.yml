@@ -1,7 +1,7 @@
 versions:
   changelog: "2.1.2"
   consensus: "0.3.0"
-  gradle: "8.2.1"
+  gradle: "8.4"
   intellij: "1.15.0"
   kotlin: "1.9.0"
   kotlinx:
