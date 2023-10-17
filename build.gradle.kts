@@ -25,9 +25,11 @@ dependencies {
     implementation(kotlinx.serialization.json)
 }
 
+val targetIntelliJVersion = "2023.1.5"
+
 intellij {
     pluginName.set("Settings Hero")
-    version.set("2023.1.4")
+    version.set(targetIntelliJVersion)
     plugins.set(listOf("Git4Idea"))
 }
 
@@ -74,6 +76,6 @@ tasks {
         autoReloadPlugins.set(true)
     }
     runPluginVerifier {
-        ideVersions.set(listOf("2023.1.4", "2023.2"))
+        ideVersions.set(listOf(targetIntelliJVersion, "2023.2.3"))
     }
 }
