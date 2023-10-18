@@ -9,7 +9,6 @@ import com.intellij.openapi.components.SimplePersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
-import me.omico.intellij.settingsHero.profile.SettingsHeroProfile
 
 internal val settingsHeroSettings: SettingsHeroSettings = service<SettingsHeroSettings>()
 
@@ -45,10 +44,10 @@ internal class SettingsHeroSettings : SimplePersistentStateComponent<SettingsHer
             localSettingsHeroSettings.state.localRepository = value.ifBlank { null }
         }
 
-    var currentProfile: String
-        get() = localSettingsHeroSettings.state.currentProfile ?: SettingsHeroProfile.DEFAULT_NAME
+    var currentProfile: String?
+        get() = localSettingsHeroSettings.state.currentProfile
         set(value) {
-            localSettingsHeroSettings.state.currentProfile = value.ifBlank { null }
+            localSettingsHeroSettings.state.currentProfile = value?.ifBlank { null }
         }
 
     class State : BaseState() {
@@ -71,6 +70,6 @@ private class LocalSettingsHeroSettings : SimplePersistentStateComponent<LocalSe
     class State : BaseState() {
         var enabled: Boolean by property(defaultValue = false)
         var localRepository: String? by string()
-        var currentProfile: String? by string(defaultValue = SettingsHeroProfile.DEFAULT_NAME)
+        var currentProfile: String? by string()
     }
 }

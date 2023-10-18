@@ -17,7 +17,7 @@ import com.intellij.ui.layout.ValidationInfoBuilder
 import me.omico.intellij.settingsHero.SettingsHeroRepositoryType
 import me.omico.intellij.settingsHero.message
 import me.omico.intellij.settingsHero.profile.SettingsHeroProfileManager
-import me.omico.intellij.settingsHero.repository.refreshLocalRepository
+import me.omico.intellij.settingsHero.settingsHeroSettings
 import me.omico.intellij.settingsHero.ui.component.group
 import me.omico.intellij.settingsHero.ui.component.segmentedButton
 import me.omico.intellij.settingsHero.ui.component.textField
@@ -30,6 +30,7 @@ import me.omico.intellij.settingsHero.ui.localRepositoryDirectoryProperty
 import me.omico.intellij.settingsHero.ui.remoteRepositoryUrlProperty
 import me.omico.intellij.settingsHero.ui.repositoryTypeProperty
 import javax.swing.JComponent
+import kotlin.io.path.Path
 
 fun Panel.repository(): Unit =
     group(
@@ -95,8 +96,7 @@ private fun checkRepositoryAvailability(type: SettingsHeroRepositoryType) {
     val isAvailable = message == null
     isRepositoryAvailableProperty.set(isAvailable)
     if (!isAvailable) return
-    refreshLocalRepository()
-    SettingsHeroProfileManager.load()
+    SettingsHeroProfileManager.initialize(Path(settingsHeroSettings.localRepositoryDirectory))
 }
 
 private fun <T : JComponent> Cell<T>.applyRepositoryTextField(

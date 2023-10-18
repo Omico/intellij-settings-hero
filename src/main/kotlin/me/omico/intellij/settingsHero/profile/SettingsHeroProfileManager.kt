@@ -2,84 +2,65 @@
 // SPDX-License-Identifier: GPL-3.0-only
 package me.omico.intellij.settingsHero.profile
 
-import com.intellij.util.io.createDirectories
-import me.omico.intellij.settingsHero.repository.localRepository
-import me.omico.intellij.settingsHero.utility.clearAndAddAll
+import me.omico.intellij.settingsHero.settingsHeroSettings
+import java.nio.file.Path
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.deleteRecursively
 
 object SettingsHeroProfileManager {
-    private val persistenceProfiles = mutableListOf<SettingsHeroProfile>()
-    private val temporaryProfiles = mutableListOf<SettingsHeroProfile>()
+    private lateinit var repositoryDirectory: Path
+    private var persistentProfiles: SettingsHeroProfiles = emptyList()
+    private var temporaryProfiles: SettingsHeroProfiles = emptyList()
 
     val profiles: SettingsHeroProfiles
         get() = temporaryProfiles
 
-    fun load() {
-        val profiles = localRepository.loadProfiles(::prepareInitialData)
-        persistenceProfiles.clearAndAddAll(profiles)
-        temporaryProfiles.clearAndAddAll(profiles)
+    fun initialize(repositoryDirectory: Path) {
+        SettingsHeroProfileManager.repositoryDirectory = repositoryDirectory
+        load(repositoryDirectory)
     }
 
-    fun temporaryProfile(profileName: String): SettingsHeroProfile =
-        temporaryProfiles.firstOrNull { it.name == profileName } ?: SettingsHeroProfile.Default
+    fun find(name: String): SettingsHeroProfile? = temporaryProfiles.find { it.name == name }
 
-    fun newTemporaryProfile(name: String = "New Profile"): SettingsHeroProfile {
-        val newProfileName = findAvailableNewName(name)
-        val newProfile = SettingsHeroProfile(newProfileName)
-        temporaryProfiles.add(newProfile)
+    fun save() {
+        settingsHeroSettings.currentProfile?.let(::find)?.saveTo(repositoryDirectory)
+        val names = temporaryProfiles.names
+        persistentProfiles
+            .filterNot { it.name in names }
+            .forEach { profile ->
+                @OptIn(ExperimentalPathApi::class)
+                repositoryDirectory.resolve(profile.name).deleteRecursively()
+            }
+        persistentProfiles = temporaryProfiles
+    }
+
+    fun reset() {
+        temporaryProfiles = persistentProfiles
+    }
+
+    fun new(name: String = "New Profile"): SettingsHeroProfile {
+        val newProfile = newSettingsHeroProfile(findAvailableNewName(name))
+        modify { this + newProfile }
         return newProfile
     }
 
-    fun removeTemporaryProfile(profileName: String) {
-        temporaryProfiles.removeIf { it.name == profileName }
-        if (temporaryProfiles.isEmpty()) {
-            temporaryProfiles.add(SettingsHeroProfile.Default)
-        }
+    fun remove(name: String): Unit = modify { filterNot { it.name == name } }
+
+    fun rename(oldName: String, newName: String): Unit = modify(oldName) { copy(name = newName) }
+
+    fun replace(newProfile: SettingsHeroProfile): Unit = modify(newProfile.name) { newProfile }
+
+    fun duplicate(name: String) {
+        val profile = find(name) ?: return
+        val newProfileName = findAvailableNewName("${profile.name} (Copy)")
+        modify { this + profile.copy(name = newProfileName) }
     }
 
-    fun renameTemporaryProfile(oldProfileName: String, newProfileName: String) {
-        temporaryProfiles.replaceAll {
-            when (it.name) {
-                oldProfileName -> it.copy(name = newProfileName)
-                else -> it
-            }
-        }
-    }
+    fun isModified(): Boolean = persistentProfiles != temporaryProfiles
 
-    fun duplicateTemporaryProfile(profileName: String) {
-        temporaryProfiles.first { it.name == profileName }.let { profile ->
-            temporaryProfiles.add(profile.copy(name = findAvailableNewName("${profile.name} (Copy)")))
-        }
-    }
-
-    fun replaceTemporaryProfile(profile: SettingsHeroProfile) {
-        temporaryProfiles.replaceAll {
-            when (it.name) {
-                profile.name -> profile
-                else -> it
-            }
-        }
-    }
-
-    fun saveTemporaryProfiles() {
-        persistenceProfiles.names.toSet()
-            .minus(temporaryProfiles.names.toSet())
-            .forEach(localRepository::remove)
-        persistenceProfiles.clearAndAddAll(temporaryProfiles)
-        localRepository.saveProfiles(temporaryProfiles)
-    }
-
-    fun isModified(): Boolean = persistenceProfiles != temporaryProfiles
-
-    fun resetTemporaryProfiles() {
-        temporaryProfiles.clearAndAddAll(persistenceProfiles)
-    }
-
-    private fun prepareInitialData(): SettingsHeroProfiles {
-        localRepository.saveProfiles(DefaultSettingsHeroProfiles)
-        localRepository.profileDirectory(SettingsHeroProfile.DEFAULT_NAME).createDirectories()
-        persistenceProfiles.add(SettingsHeroProfile.Default)
-        temporaryProfiles.add(SettingsHeroProfile.Default)
-        return DefaultSettingsHeroProfiles
+    private fun load(repositoryDirectory: Path) {
+        persistentProfiles = loadSettingsHeroProfiles(repositoryDirectory)
+        temporaryProfiles = persistentProfiles
     }
 
     private fun findAvailableNewName(name: String): String {
@@ -97,4 +78,18 @@ object SettingsHeroProfileManager {
         }
         return newProfileName
     }
+
+    private fun modify(modifier: SettingsHeroProfiles.() -> SettingsHeroProfiles) {
+        temporaryProfiles = temporaryProfiles.modifier()
+    }
+
+    private fun modify(name: String, modifier: SettingsHeroProfile.() -> SettingsHeroProfile): Unit =
+        modify {
+            map { profile ->
+                when (profile.name) {
+                    name -> profile.modifier()
+                    else -> profile
+                }
+            }
+        }
 }

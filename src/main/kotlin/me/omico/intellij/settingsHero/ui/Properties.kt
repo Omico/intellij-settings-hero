@@ -41,4 +41,4 @@ internal val isRepositoryAvailableProperty: GraphProperty<Boolean> = propertyGra
 internal val isProfileGroupVisibleProperty: ObservableProperty<Boolean> =
     isSettingsHeroEnabledProperty.and(isRepositoryAvailableProperty)
 
-internal val currentProfileProperty: GraphProperty<SettingsHeroProfile> = propertyGraph.lateinitProperty()
+internal val currentProfileProperty: GraphProperty<SettingsHeroProfile?> = propertyGraph.property(null)

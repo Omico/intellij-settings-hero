@@ -2,17 +2,16 @@
 // SPDX-License-Identifier: GPL-3.0-only
 package me.omico.intellij.settingsHero.ui.profile
 
-import com.intellij.collaboration.ui.selectFirst
 import com.intellij.openapi.observable.properties.GraphProperty
+import com.intellij.openapi.observable.util.whenItemSelected
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.dsl.builder.Panel
-import com.intellij.ui.dsl.builder.bindItem
 import com.intellij.ui.util.preferredWidth
 import me.omico.intellij.settingsHero.SettingsHeroIcons
 import me.omico.intellij.settingsHero.message
-import me.omico.intellij.settingsHero.profile.DefaultSettingsHeroProfiles
+import me.omico.intellij.settingsHero.profile.SettingsHeroProfile
 import me.omico.intellij.settingsHero.profile.SettingsHeroProfileManager
 import me.omico.intellij.settingsHero.profile.SettingsHeroProfiles
 import me.omico.intellij.settingsHero.profile.names
@@ -22,19 +21,24 @@ import me.omico.intellij.settingsHero.ui.component.comboBox
 import me.omico.intellij.settingsHero.ui.component.showTextFieldDialog
 import me.omico.intellij.settingsHero.ui.currentProfileProperty
 import me.omico.intellij.settingsHero.ui.isSettingsHeroEnabledProperty
+import me.omico.intellij.settingsHero.ui.localRepositoryDirectoryProperty
 import me.omico.intellij.settingsHero.ui.propertyGraph
 import me.omico.intellij.settingsHero.utility.onChanged
+import kotlin.io.path.Path
 
-private val currentProfileNameProperty: GraphProperty<String> =
+private val currentProfileNameProperty: GraphProperty<String?> =
     propertyGraph.property(settingsHeroSettings.currentProfile)
         .onChanged { currentProfile ->
             settingsHeroSettings.currentProfile = currentProfile
-            currentProfileProperty.set(SettingsHeroProfileManager.temporaryProfile(currentProfile))
+            currentProfileProperty.set(currentProfile?.let(SettingsHeroProfileManager::find))
         }
 
 private val profilesProperty: GraphProperty<SettingsHeroProfiles> =
-    propertyGraph.lazyProperty(::DefaultSettingsHeroProfiles)
-        .onChanged { profiles -> ProfileComboBoxModel.reload(profiles.names) }
+    propertyGraph.property(emptyList<SettingsHeroProfile>())
+        .onChanged { profiles ->
+            ProfileComboBoxModel.reload(profiles.names)
+            ProfileComboBoxModel.selectedItem = currentProfileNameProperty.get()
+        }
 
 internal fun Panel.currentProfile() {
     isSettingsHeroEnabledProperty.afterChange { isEnabled ->
@@ -43,21 +47,28 @@ internal fun Panel.currentProfile() {
             after = { currentProfileNameProperty.set(settingsHeroSettings.currentProfile) },
         )
     }
+    localRepositoryDirectoryProperty.afterChange {
+        updateProfiles(
+            before = { SettingsHeroProfileManager.initialize(Path(it)) },
+            after = { currentProfileNameProperty.set(settingsHeroSettings.currentProfile) },
+        )
+    }
     row(label = message("settingsHero.label.currentProfile")) {
         comboBox(
             modifier = {
                 applyToComponent {
                     preferredWidth = 300
+                    whenItemSelected { item ->
+                        ProfileComboBoxModel.selectedItem = item
+                    }
                 }
-                bindItem(currentProfileNameProperty)
-                ProfileComboBoxModel.selectedItem = currentProfileNameProperty.get()
                 onIsModified {
                     when {
                         !isSettingsHeroEnabledProperty.get() -> false
                         else -> currentProfileNameProperty.get() != ProfileComboBoxModel.selectedItem
                     }
                 }
-                onApply { currentProfileNameProperty.set(ProfileComboBoxModel.selectedItem!!) }
+                onApply { currentProfileNameProperty.set(ProfileComboBoxModel.selectedItem) }
                 onReset { currentProfileNameProperty.set(settingsHeroSettings.currentProfile) }
             },
             model = ProfileComboBoxModel,
@@ -65,8 +76,8 @@ internal fun Panel.currentProfile() {
         actionsButton(
             modifier = {
                 onIsModified(SettingsHeroProfileManager::isModified)
-                onApply { updateProfiles(before = SettingsHeroProfileManager::saveTemporaryProfiles) }
-                onReset { updateProfiles(before = SettingsHeroProfileManager::resetTemporaryProfiles) }
+                onApply { updateProfiles(before = SettingsHeroProfileManager::save) }
+                onReset { updateProfiles(before = SettingsHeroProfileManager::reset) }
             },
             actions = profileActions,
             icon = SettingsHeroIcons.Actions.Settings,
@@ -87,21 +98,30 @@ private val profileActions = arrayOf(
     DumbAwareAction.create(message("settingsHero.action.newProfile")) {
         updateProfiles(
             before = {
-                val profile = SettingsHeroProfileManager.newTemporaryProfile()
+                val profile = SettingsHeroProfileManager.new()
                 ProfileComboBoxModel.new(profile.name)
+                currentProfileNameProperty.set(profile.name)
             },
         )
     },
     DumbAwareAction.create(message("settingsHero.action.removeProfile")) {
         updateProfiles(
-            before = { SettingsHeroProfileManager.removeTemporaryProfile(currentProfileNameProperty.get()) },
-            after = ProfileComboBoxModel::selectFirst,
+            before = {
+                val profileName = currentProfileNameProperty.get() ?: return@updateProfiles
+                SettingsHeroProfileManager.remove(profileName)
+            },
+            after = {
+                val names = SettingsHeroProfileManager.profiles.names
+                ProfileComboBoxModel.reload(SettingsHeroProfileManager.profiles.names)
+                ProfileComboBoxModel.selectedItem = names.firstOrNull()
+                currentProfileNameProperty.set(ProfileComboBoxModel.selectedItem)
+            },
         )
     },
     DumbAwareAction.create(message("settingsHero.action.renameProfile")) {
         updateProfiles(
             before = {
-                val oldProfileName = currentProfileNameProperty.get()
+                val oldProfileName = currentProfileNameProperty.get() ?: return@updateProfiles
                 showTextFieldDialog(
                     title = message("settingsHero.dialog.renameProfile.title"),
                     initialText = oldProfileName,
@@ -114,7 +134,7 @@ private val profileActions = arrayOf(
                                     ValidationInfo("Profile name already exists").let(::add)
                                 else -> {
                                     ProfileComboBoxModel.rename(oldProfileName, newProfileName)
-                                    SettingsHeroProfileManager.renameTemporaryProfile(oldProfileName, newProfileName)
+                                    SettingsHeroProfileManager.rename(oldProfileName, newProfileName)
                                     currentProfileNameProperty.set(newProfileName)
                                 }
                             }
@@ -126,11 +146,15 @@ private val profileActions = arrayOf(
     },
     DumbAwareAction.create(message("settingsHero.action.duplicateProfile")) {
         updateProfiles(
-            before = { SettingsHeroProfileManager.duplicateTemporaryProfile(currentProfileNameProperty.get()) },
+            before = {
+                val profileName = currentProfileNameProperty.get() ?: return@updateProfiles
+                SettingsHeroProfileManager.duplicate(profileName)
+            },
         )
     },
 )
 
+@Suppress("JavaIoSerializableObjectMustHaveReadResolve")
 private object ProfileComboBoxModel : CollectionComboBoxModel<String>() {
     override fun getSelectedItem(): String? = super.getSelectedItem() as? String
 
@@ -147,6 +171,6 @@ private object ProfileComboBoxModel : CollectionComboBoxModel<String>() {
 
     fun reload(names: List<String>) {
         removeAll()
-        addAll(0, names.sorted())
+        addAll(0, names)
     }
 }
