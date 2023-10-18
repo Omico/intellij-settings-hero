@@ -11,11 +11,11 @@ val SettingsHeroProfiles.names: List<String>
 
 @Serializable
 data class SettingsHeroProfile(
-    val name: String = DefaultName,
+    val name: String = DEFAULT_NAME,
     val rules: Set<String> = DefaultRegexes,
 ) {
     companion object {
-        internal const val DefaultName = "Default"
+        internal const val DEFAULT_NAME = "Default"
 
         private val DefaultRegexes = setOf(
             "codestyles/*",

@@ -46,7 +46,7 @@ internal class SettingsHeroSettings : SimplePersistentStateComponent<SettingsHer
         }
 
     var currentProfile: String
-        get() = localSettingsHeroSettings.state.currentProfile ?: SettingsHeroProfile.DefaultName
+        get() = localSettingsHeroSettings.state.currentProfile ?: SettingsHeroProfile.DEFAULT_NAME
         set(value) {
             localSettingsHeroSettings.state.currentProfile = value.ifBlank { null }
         }
@@ -71,6 +71,6 @@ private class LocalSettingsHeroSettings : SimplePersistentStateComponent<LocalSe
     class State : BaseState() {
         var enabled: Boolean by property(defaultValue = false)
         var localRepository: String? by string()
-        var currentProfile: String? by string(defaultValue = SettingsHeroProfile.DefaultName)
+        var currentProfile: String? by string(defaultValue = SettingsHeroProfile.DEFAULT_NAME)
     }
 }

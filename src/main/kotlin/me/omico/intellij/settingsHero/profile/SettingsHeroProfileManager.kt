@@ -76,7 +76,7 @@ object SettingsHeroProfileManager {
 
     private fun prepareInitialData(): SettingsHeroProfiles {
         localRepository.saveProfiles(DefaultSettingsHeroProfiles)
-        localRepository.profileDirectory(SettingsHeroProfile.DefaultName).createDirectories()
+        localRepository.profileDirectory(SettingsHeroProfile.DEFAULT_NAME).createDirectories()
         persistenceProfiles.add(SettingsHeroProfile.Default)
         temporaryProfiles.add(SettingsHeroProfile.Default)
         return DefaultSettingsHeroProfiles
