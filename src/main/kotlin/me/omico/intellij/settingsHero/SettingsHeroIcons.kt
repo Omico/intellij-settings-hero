@@ -9,5 +9,6 @@ object SettingsHeroIcons {
 
     object Actions {
         val Settings = loadIcon("/icons/actions/settings.svg")
+        val OpenInNewWindow = loadIcon("/icons/actions/openInNewWindow.svg")
     }
 }

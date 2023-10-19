@@ -39,6 +39,17 @@ fun Row.button(
     ).apply(modifier)
 }
 
+fun Row.actionButton(
+    modifier: Cell<ActionButton>.() -> Unit = {},
+    @NonNls actionPlace: String = ActionPlaces.UNKNOWN,
+    action: AnAction,
+) {
+    actionButton(
+        action = action,
+        actionPlace = actionPlace,
+    ).apply(modifier)
+}
+
 fun Row.actionsButton(
     modifier: Cell<ActionButton>.() -> Unit = {},
     vararg actions: AnAction,

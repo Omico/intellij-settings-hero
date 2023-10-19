@@ -7,6 +7,8 @@ package me.omico.intellij.settingsHero.ui.repository
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.observable.properties.ObservableMutableProperty
 import com.intellij.openapi.observable.properties.ObservableProperty
+import com.intellij.openapi.observable.util.and
+import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.components.JBTextField
@@ -14,10 +16,12 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.layout.ValidationInfoBuilder
+import me.omico.intellij.settingsHero.SettingsHeroIcons
 import me.omico.intellij.settingsHero.SettingsHeroRepositoryType
 import me.omico.intellij.settingsHero.message
 import me.omico.intellij.settingsHero.profile.SettingsHeroProfileManager
 import me.omico.intellij.settingsHero.settingsHeroSettings
+import me.omico.intellij.settingsHero.ui.component.actionButton
 import me.omico.intellij.settingsHero.ui.component.group
 import me.omico.intellij.settingsHero.ui.component.segmentedButton
 import me.omico.intellij.settingsHero.ui.component.textField
@@ -29,6 +33,8 @@ import me.omico.intellij.settingsHero.ui.isSettingsHeroEnabledProperty
 import me.omico.intellij.settingsHero.ui.localRepositoryDirectoryProperty
 import me.omico.intellij.settingsHero.ui.remoteRepositoryUrlProperty
 import me.omico.intellij.settingsHero.ui.repositoryTypeProperty
+import java.awt.Desktop
+import java.io.File
 import javax.swing.JComponent
 import kotlin.io.path.Path
 
@@ -60,6 +66,7 @@ fun Panel.repository(): Unit =
             row {
                 textFieldWithBrowseButton(
                     modifier = {
+                        resizableColumn()
                         applyRepositoryTextField(
                             repository = localRepositoryDirectoryProperty,
                             visibleIf = isLocalRepositoryProperty,
@@ -70,6 +77,12 @@ fun Panel.repository(): Unit =
                     },
                     browseDialogTitle = message("settingsHero.textField.repository.browseDialogTitle"),
                     fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor(),
+                )
+                actionButton(
+                    modifier = { visibleIf(isLocalRepositoryProperty.and(isRepositoryAvailableProperty)) },
+                    action = DumbAwareAction.create(SettingsHeroIcons.Actions.OpenInNewWindow) {
+                        Desktop.getDesktop().open(File(localRepositoryDirectoryProperty.get()))
+                    },
                 )
             }
             row {

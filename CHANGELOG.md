@@ -5,6 +5,7 @@
 ### Added
 
 - Add save to local operation
+- Add open local repository folder operation
 
 ### Changed
 
