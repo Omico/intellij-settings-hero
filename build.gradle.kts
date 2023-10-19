@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 
@@ -19,6 +21,12 @@ version = "0.5.0-SNAPSHOT"
 
 kotlin {
     jvmToolchain(17)
+}
+
+configurations {
+    runtimeClasspath {
+        exclude(group = "org.jetbrains.kotlin")
+    }
 }
 
 dependencies {
