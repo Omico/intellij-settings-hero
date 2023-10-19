@@ -11,6 +11,7 @@ import me.omico.intellij.settingsHero.profile.SettingsHeroProfileManager
 import me.omico.intellij.settingsHero.ui.profile.profile
 import me.omico.intellij.settingsHero.ui.repository.repository
 import me.omico.intellij.settingsHero.ui.status.status
+import me.omico.intellij.settingsHero.ui.sync.operation
 
 internal class SettingsHeroConfigurable : BoundSearchableConfigurable(
     displayName = message("settingsHero.title"),
@@ -19,6 +20,7 @@ internal class SettingsHeroConfigurable : BoundSearchableConfigurable(
     override fun createPanel(): DialogPanel = panel {
         onApply(SettingsHeroProfileManager::save)
         status()
+        operation()
         repository()
         profile(parentDisposable = disposable!!)
     }

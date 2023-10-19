@@ -65,10 +65,9 @@ fun <T> Row.segmentedButton(
 
 fun Row.label(
     modifier: Cell<JLabel>.() -> Unit = {},
-    @NlsContexts.Label text: String,
-) {
+    @NlsContexts.Label text: String = "",
+): Cell<JLabel> =
     label(text = text).apply(modifier)
-}
 
 fun Row.textField(
     modifier: Cell<JBTextField>.() -> Unit = {},

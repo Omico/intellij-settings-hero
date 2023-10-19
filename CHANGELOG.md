@@ -4,6 +4,8 @@
 
 ### Added
 
+- Add save to local operation
+
 ### Changed
 
 - Refactor profile structure
