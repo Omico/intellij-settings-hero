@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class SettingsHeroPluginDependency(
     val id: String,
-    val isOptional: Boolean,
+    val isOptional: Boolean = false,
 )
 
 typealias SettingsHeroPluginDependencies = List<SettingsHeroPluginDependency>

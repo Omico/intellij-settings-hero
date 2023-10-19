@@ -10,8 +10,8 @@ import kotlinx.serialization.Serializable
 data class SettingsHeroPlugin(
     val id: String,
     val name: String,
-    val enabled: Boolean,
-    val dependencies: SettingsHeroPluginDependencies,
+    val enabled: Boolean = true,
+    val dependencies: SettingsHeroPluginDependencies = emptyList(),
 )
 
 typealias SettingsHeroPlugins = List<SettingsHeroPlugin>
