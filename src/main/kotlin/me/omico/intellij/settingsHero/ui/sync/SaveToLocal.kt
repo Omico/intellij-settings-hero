@@ -11,7 +11,6 @@ import me.omico.intellij.settingsHero.profile.saveTo
 import me.omico.intellij.settingsHero.ui.component.button
 import me.omico.intellij.settingsHero.ui.component.label
 import me.omico.intellij.settingsHero.ui.currentProfileProperty
-import me.omico.intellij.settingsHero.ui.isSettingsHeroEnabledProperty
 import me.omico.intellij.settingsHero.ui.localRepositoryDirectoryProperty
 import me.omico.intellij.settingsHero.ui.propertyGraph
 import me.omico.intellij.settingsHero.utility.progressManager
@@ -30,7 +29,6 @@ internal fun Panel.saveToLocal() {
     }
     row {
         button(
-            modifier = { visibleIf(isSettingsHeroEnabledProperty) },
             text = message("settingsHero.button.saveToLocal"),
             onClick = {
                 progressManager.executeNonCancelableSection {
