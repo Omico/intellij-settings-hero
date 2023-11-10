@@ -95,6 +95,7 @@ internal val DefaultRules: Set<String> =
         "options/window.state.xml",
         "plugins",
         "scratches",
+        "settingsSync",
         "ssl",
         "tasks",
         "workspace",
