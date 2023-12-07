@@ -102,7 +102,7 @@ internal val DefaultRules: Set<String> =
     )
 
 internal fun Path.saveSettings(rules: Set<String>) {
-    clearDirectory()
+    runCatching(Path::clearDirectory)
     if (rules.isEmpty()) return
     val filteredPaths = mutableMapOf<String, Path>()
     filterPaths(filteredPaths, rules, ideaConfigurationDirectory)
@@ -113,11 +113,20 @@ internal fun Path.saveSettings(rules: Set<String>) {
     }
 }
 
+private val allowedDirectories: Set<String> =
+    setOf(
+        "codestyles",
+        "colors",
+        "keymaps",
+        "options",
+    )
+
 private fun filterPaths(filteredPaths: MutableMap<String, Path>, rules: Set<String>, path: Path): Unit =
     path.listDirectoryEntries()
         .associateBy { it.invariantSeparatorsPathString.removeIdeaConfigurationDirectoryPrefix() }
         .filterNot { (pathString, path) ->
             val relativePath = ideaConfigurationDirectory.relativize(path)
+            if (allowedDirectories.any(relativePath::startsWith)) return@filterNot false
             rules.any { rule ->
                 when {
                     '*' in rule -> FileSystems.getDefault().getPathMatcher("glob:$rule").matches(relativePath)
