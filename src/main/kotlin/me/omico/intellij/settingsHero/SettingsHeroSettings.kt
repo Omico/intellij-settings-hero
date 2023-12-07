@@ -9,6 +9,8 @@ import com.intellij.openapi.components.SimplePersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
+import kotlin.io.path.Path
+import kotlin.io.path.exists
 
 internal val settingsHeroSettings: SettingsHeroSettings = service<SettingsHeroSettings>()
 
@@ -39,7 +41,9 @@ internal class SettingsHeroSettings : SimplePersistentStateComponent<SettingsHer
         }
 
     var localRepositoryDirectory: String
-        get() = localSettingsHeroSettings.state.localRepository ?: ""
+        get() = localSettingsHeroSettings.state.localRepository
+            ?.takeIf { directory -> Path(directory).exists() }
+            ?: ""
         set(value) {
             localSettingsHeroSettings.state.localRepository = value.ifBlank { null }
         }
