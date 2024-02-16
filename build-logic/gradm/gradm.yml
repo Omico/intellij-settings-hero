@@ -1,13 +1,13 @@
 versions:
   changelog: "2.2.0"
-  consensus: "0.8.0"
+  consensus: "0.9.0"
   gradle: "8.6"
-  intellij: "1.17.0"
-  kotlin: "1.9.20"
+  intellij: "1.17.1"
+  kotlin: "1.9.22"
   kotlinx:
     serialization: "1.6.2"
   plugins:
-    gradle.enterprise: "3.16.1"
+    gradle.enterprise: "3.16.2"
     spotless: "6.25.0"
 
 repositories:
