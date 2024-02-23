@@ -33,7 +33,7 @@ dependencies {
     implementation(kotlinx.serialization.json)
 }
 
-val targetIntelliJVersion = "2023.1.5"
+val targetIntelliJVersion = "2023.1.6"
 
 intellij {
     pluginName.set("Settings Hero")
@@ -84,6 +84,6 @@ tasks {
         autoReloadPlugins.set(true)
     }
     runPluginVerifier {
-        ideVersions.set(listOf(targetIntelliJVersion, "2023.2.3", "2023.3"))
+        ideVersions.set(listOf(targetIntelliJVersion, "2023.2.6", "2023.3.4"))
     }
 }
