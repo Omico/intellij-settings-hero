@@ -33,7 +33,7 @@ dependencies {
     implementation(kotlinx.serialization.json)
 }
 
-val targetIntelliJVersion = "2023.1.6"
+val targetIntelliJVersion = "2023.2.6"
 
 intellij {
     pluginName.set("Settings Hero")
@@ -52,8 +52,8 @@ tasks {
         onlyIf { !project.version.toString().endsWith("-SNAPSHOT") }
     }
     patchPluginXml {
-        sinceBuild.set("231")
-        untilBuild.set("233.*")
+        sinceBuild.set("232")
+        untilBuild.set("241.*")
         pluginDescription.set(
             providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
                 val start = "<!-- Plugin description -->"
@@ -84,6 +84,6 @@ tasks {
         autoReloadPlugins.set(true)
     }
     runPluginVerifier {
-        ideVersions.set(listOf(targetIntelliJVersion, "2023.2.6", "2023.3.4"))
+        ideVersions.set(listOf(targetIntelliJVersion, "2023.3.4", "2024.1"))
     }
 }
