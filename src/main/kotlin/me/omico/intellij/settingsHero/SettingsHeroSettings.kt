@@ -1,4 +1,4 @@
-// Copyright 2023 Omico
+// Copyright 2023-2024 Omico
 // SPDX-License-Identifier: GPL-3.0-only
 package me.omico.intellij.settingsHero
 
@@ -12,7 +12,8 @@ import com.intellij.openapi.components.service
 import kotlin.io.path.Path
 import kotlin.io.path.exists
 
-internal val settingsHeroSettings: SettingsHeroSettings = service<SettingsHeroSettings>()
+internal inline val settingsHeroSettings: SettingsHeroSettings
+    get() = service()
 
 @Service(Service.Level.APP)
 @State(

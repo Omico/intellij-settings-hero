@@ -1,9 +1,8 @@
-// Copyright 2023 Omico
+// Copyright 2023-2024 Omico
 // SPDX-License-Identifier: GPL-3.0-only
 package me.omico.intellij.settingsHero.utility
 
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.nio.file.Path

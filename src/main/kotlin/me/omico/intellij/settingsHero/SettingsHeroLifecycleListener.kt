@@ -1,7 +1,5 @@
-// Copyright 2023 Omico
+// Copyright 2023-2024 Omico
 // SPDX-License-Identifier: GPL-3.0-only
-@file:Suppress("UnstableApiUsage")
-
 package me.omico.intellij.settingsHero
 
 import com.intellij.ide.AppLifecycleListener
