@@ -11,7 +11,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.Row
-import com.intellij.ui.util.minimumWidth
+import java.awt.Dimension
 import javax.swing.JTree
 
 fun Row.fileTree(
@@ -35,7 +35,7 @@ fun Row.fileTree(
                 .let(::registerMouseListener)
         }
         .tree
-        .apply { minimumWidth = 300 }
+        .apply { minimumSize = Dimension(300, minimumSize.height) }
         .let(::cell)
         .apply(modifier)
 }

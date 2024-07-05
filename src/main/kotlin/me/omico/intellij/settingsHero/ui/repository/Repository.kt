@@ -59,8 +59,8 @@ fun Panel.repository(): Unit =
                         bind(repositoryTypeProperty)
                         whenItemSelectedFromUi(listener = ::checkRepositoryAvailability)
                     },
-                    items = SettingsHeroRepositoryType.values().toList(),
-                    renderer = SettingsHeroRepositoryType::displayName,
+                    items = SettingsHeroRepositoryType.entries,
+                    renderer = { text = it.displayName },
                 )
             }
             row {

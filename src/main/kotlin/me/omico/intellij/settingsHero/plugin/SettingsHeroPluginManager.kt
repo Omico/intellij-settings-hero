@@ -14,7 +14,7 @@ object SettingsHeroPluginManager {
     }
 
     private fun load(): SettingsHeroPlugins =
-        PluginManagerCore.getPlugins()
+        PluginManagerCore.plugins
             .filterNot(IdeaPluginDescriptor::isBundled)
             .map(IdeaPluginDescriptor::toSettingsHeroPlugin)
             .sortedBy(SettingsHeroPlugin::id)

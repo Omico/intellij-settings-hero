@@ -19,7 +19,8 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.Row
 import com.intellij.ui.dsl.builder.SegmentedButton
-import org.jetbrains.annotations.Nls
+import com.intellij.ui.dsl.builder.actionButton
+import com.intellij.ui.dsl.builder.actionsButton
 import org.jetbrains.annotations.NonNls
 import java.awt.event.ActionEvent
 import javax.swing.ComboBoxModel
@@ -66,7 +67,7 @@ fun Row.actionsButton(
 fun <T> Row.segmentedButton(
     modifier: SegmentedButton<T>.() -> Unit = {},
     items: Collection<T>,
-    renderer: (T) -> @Nls String,
+    renderer: SegmentedButton.ItemPresentation.(T) -> Unit,
 ) {
     segmentedButton(
         items = items,

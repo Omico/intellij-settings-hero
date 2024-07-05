@@ -6,7 +6,7 @@ import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.util.NlsContexts
 import com.intellij.ui.components.dialog
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.ui.util.minimumWidth
+import java.awt.Dimension
 
 fun showTextFieldDialog(
     @NlsContexts.DialogTitle title: String,
@@ -22,7 +22,7 @@ fun showTextFieldDialog(
                     modifier = {
                         focused()
                         applyToComponent {
-                            minimumWidth = 400
+                            minimumSize = Dimension(400, minimumSize.height)
                             text = initialText
                         }
                         onChanged { textField -> value = textField.text }

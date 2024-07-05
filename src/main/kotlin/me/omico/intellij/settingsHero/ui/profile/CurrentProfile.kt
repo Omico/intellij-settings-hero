@@ -8,7 +8,6 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.ui.CollectionComboBoxModel
 import com.intellij.ui.dsl.builder.Panel
-import com.intellij.ui.util.preferredWidth
 import me.omico.intellij.settingsHero.SettingsHeroIcons
 import me.omico.intellij.settingsHero.message
 import me.omico.intellij.settingsHero.profile.SettingsHeroProfile
@@ -24,6 +23,7 @@ import me.omico.intellij.settingsHero.ui.isSettingsHeroEnabledProperty
 import me.omico.intellij.settingsHero.ui.localRepositoryDirectoryProperty
 import me.omico.intellij.settingsHero.ui.propertyGraph
 import me.omico.intellij.settingsHero.utility.onChanged
+import java.awt.Dimension
 import kotlin.io.path.Path
 
 private val currentProfileNameProperty: GraphProperty<String?> =
@@ -57,7 +57,7 @@ internal fun Panel.currentProfile() {
         comboBox(
             modifier = {
                 applyToComponent {
-                    preferredWidth = 300
+                    preferredSize = Dimension(300, preferredSize.height)
                     whenItemSelected { item ->
                         ProfileComboBoxModel.selectedItem = item
                     }

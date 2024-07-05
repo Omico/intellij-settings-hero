@@ -29,18 +29,18 @@ dependencies {
     implementation(kotlinx.serialization.json)
 }
 
-val targetIntelliJVersion = "2023.2.6"
+val targetIntelliJVersion = "2024.1.4"
 
 intellij {
-    pluginName.set("Settings Hero")
-    version.set(targetIntelliJVersion)
-    plugins.set(listOf("Git4Idea"))
+    pluginName = "Settings Hero"
+    version = targetIntelliJVersion
+    plugins = listOf("Git4Idea")
 }
 
 changelog {
-    repositoryUrl.set("https://github.com/Omico/intellij-settings-hero")
-    version.set(project.version.toString())
-    path.set(file("CHANGELOG.md").canonicalPath)
+    repositoryUrl = "https://github.com/Omico/intellij-settings-hero"
+    version = project.version.toString()
+    path = file("CHANGELOG.md").canonicalPath
 }
 
 tasks {
@@ -48,21 +48,16 @@ tasks {
         onlyIf { !project.version.toString().endsWith("-SNAPSHOT") }
     }
     patchPluginXml {
-        sinceBuild.set("232")
-        untilBuild.set("241.*")
-        pluginDescription.set(
-            providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
-                val start = "<!-- Plugin description -->"
-                val end = "<!-- Plugin description end -->"
-                with(it.lines()) {
-                    subList(indexOf(start) + 1, indexOf(end)).joinToString("\n").let(::markdownToHTML)
-                }
-            },
-        )
-        changelog.getAll().values
+        sinceBuild = "241"
+        untilBuild = "242.*"
+        pluginDescription = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
+            val start = "<!-- Plugin description -->"
+            val end = "<!-- Plugin description end -->"
+            with(it.lines()) { subList(indexOf(start) + 1, indexOf(end)).joinToString("\n").let(::markdownToHTML) }
+        }
+        changeNotes = changelog.getAll().values
             .filterNot(Changelog.Item::isUnreleased)
             .joinToString("\n") { item -> changelog.renderItem(item = item, outputType = Changelog.OutputType.HTML) }
-            .let(changeNotes::set)
     }
     spotlessFreshmark {
         dependsOn(patchChangelog)
@@ -71,15 +66,15 @@ tasks {
         }
     }
     buildSearchableOptions {
-        enabled = "runPluginVerifier" !in gradle.startParameter.taskNames
+        enabled = false
     }
     buildPlugin {
-        archiveBaseName.set("SettingsHero")
+        archiveBaseName = "SettingsHero"
     }
     runIde {
-        autoReloadPlugins.set(true)
+        autoReloadPlugins = true
     }
     runPluginVerifier {
-        ideVersions.set(listOf(targetIntelliJVersion, "2023.3.4", "2024.1"))
+        ideVersions = listOf(targetIntelliJVersion, "2024.2")
     }
 }

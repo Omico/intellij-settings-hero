@@ -2,8 +2,6 @@
 // SPDX-License-Identifier: GPL-3.0-only
 package me.omico.intellij.settingsHero.profile
 
-import com.intellij.util.io.createDirectories
-import com.intellij.util.io.isDirectory
 import me.omico.intellij.settingsHero.plugin.SettingsHeroPluginManager
 import me.omico.intellij.settingsHero.utility.clearDirectory
 import me.omico.intellij.settingsHero.utility.ideaConfigurationDirectory
@@ -11,9 +9,11 @@ import me.omico.intellij.settingsHero.utility.removeIdeaConfigurationDirectoryPr
 import java.nio.file.FileSystems
 import java.nio.file.Path
 import kotlin.io.path.copyTo
+import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
 import kotlin.io.path.exists
 import kotlin.io.path.invariantSeparatorsPathString
+import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 import kotlin.io.path.notExists
