@@ -1,5 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
+import me.omico.gradm.addDeclaredRepositories
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 
@@ -12,12 +13,7 @@ plugins {
     id("ijsh.messages-properties-formatter")
 }
 
-repositories {
-    mavenCentral()
-}
-
-group = "me.omico.intellij.settingsHero"
-version = "0.5.0-SNAPSHOT"
+addDeclaredRepositories()
 
 kotlin {
     jvmToolchain(17)
