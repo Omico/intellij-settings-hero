@@ -1,7 +1,10 @@
 .DS_Store
 /.gradle
 /.idea
+/.intellijPlatform
+/.kotlin
 /build
 /local.properties
 
 !/.idea/detekt.xml
+!/.idea/jsonSchemas.xml

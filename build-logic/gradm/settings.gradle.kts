@@ -1,4 +1,4 @@
-rootProject.name = "ijsh-gradm"
+rootProject.name = "ijsh-build-logic-gradm"
 
 pluginManagement {
     repositories {

@@ -1,19 +1,20 @@
 versions:
   changelog: "2.2.1"
-  consensus: "0.9.0"
-  gradle: "8.8"
+  consensus: "0.16.1"
   intellij: "1.17.4"
-  kotlin: "1.9.22"
+  kotlin: "2.0.21"
   kotlinx:
-    serialization: "1.6.3"
+    serialization: "1.7.3"
   plugins:
-    develocity: "3.17.5"
-    spotless: "7.0.0.BETA1"
+    develocity: "3.18.2"
+    intellij: "2.1.0"
+    spotless: "7.0.0.BETA4"
 
 repositories:
   omico:
   mavenCentral:
   gradlePluginPortal:
+  noUpdates:
 
 plugins:
   gradlePluginPortal:
@@ -21,22 +22,26 @@ plugins:
     com.gradle.develocity: ${versions.plugins.develocity}
     org.jetbrains.changelog: ${versions.changelog}
     org.jetbrains.intellij: ${versions.intellij}
-    org.jetbrains.kotlin.jvm: ${versions.kotlin}
+  noUpdates:
     org.jetbrains.kotlin.plugin.serialization: ${versions.kotlin}
-  omico:
-    me.omico.consensus.api: ${versions.consensus}
-    me.omico.consensus.git: ${versions.consensus}
-    me.omico.consensus.publishing: ${versions.consensus}
-    me.omico.consensus.spotless: ${versions.consensus}
 
 dependencies:
+  gradlePluginPortal:
+    org.jetbrains.intellij.platform:
+      intellij-platform-gradle-plugin:
+        alias: intellijPlatformGradlePlugin
+        version: ${versions.plugins.intellij}
   mavenCentral:
+    org.jetbrains.kotlin:
+      kotlin-gradle-plugin:
+        alias: kotlinGradlePlugin
+        version: ${versions.kotlin}
     org.jetbrains.kotlinx:
       kotlinx-serialization-json:
         alias: kotlinx.serialization.json
         version: ${versions.kotlinx.serialization}
   omico:
     me.omico.consensus:
-      consensus-dsl:
-        alias: me.omico.consensus.dsl
+      consensus-gradle-plugins:
+        alias: consensusGradlePlugins
         version: ${versions.consensus}
