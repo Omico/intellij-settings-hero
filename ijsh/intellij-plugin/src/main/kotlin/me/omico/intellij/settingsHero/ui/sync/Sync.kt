@@ -5,11 +5,11 @@ package me.omico.intellij.settingsHero.ui.sync
 import com.intellij.ui.dsl.builder.Panel
 import me.omico.intellij.settingsHero.message
 import me.omico.intellij.settingsHero.ui.component.group
-import me.omico.intellij.settingsHero.ui.isSettingsHeroEnabledProperty
+import me.omico.intellij.settingsHero.ui.isProfileSelectedProperty
 
 internal fun Panel.operation() {
     group(
-        modifier = { visibleIf(isSettingsHeroEnabledProperty) },
+        modifier = { visibleIf(isProfileSelectedProperty) },
         title = message("settingsHero.group.operation.title"),
         init = {
             saveToLocal()

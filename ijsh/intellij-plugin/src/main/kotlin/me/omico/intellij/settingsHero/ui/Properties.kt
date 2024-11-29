@@ -7,6 +7,7 @@ import com.intellij.openapi.observable.properties.ObservableProperty
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.observable.util.and
 import com.intellij.openapi.observable.util.equalsTo
+import com.intellij.openapi.observable.util.isNotNull
 import me.omico.intellij.settingsHero.SettingsHeroRepositoryType
 import me.omico.intellij.settingsHero.profile.SettingsHeroProfile
 import me.omico.intellij.settingsHero.settingsHeroSettings
@@ -42,3 +43,5 @@ internal val isProfileGroupVisibleProperty: ObservableProperty<Boolean> =
     isSettingsHeroEnabledProperty.and(isRepositoryAvailableProperty)
 
 internal val currentProfileProperty: GraphProperty<SettingsHeroProfile?> = propertyGraph.property(null)
+
+internal val isProfileSelectedProperty: ObservableProperty<Boolean> = currentProfileProperty.isNotNull()
