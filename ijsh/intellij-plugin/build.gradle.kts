@@ -4,11 +4,11 @@ import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
 
 plugins {
-    kotlin("jvm")
-    kotlin("plugin.serialization")
+    id("ijsh.kotlin.jvm.base")
     id("ijsh.intellij.main")
     id("org.jetbrains.changelog")
     id("ijsh.messages-properties-formatter")
+    kotlin("plugin.serialization")
 }
 
 kotlin {

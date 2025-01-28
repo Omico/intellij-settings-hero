@@ -1,26 +1,31 @@
-import me.omico.consensus.api.dsl.requireRootProject
 import me.omico.consensus.spotless.ConsensusSpotlessTokens
 
 plugins {
     id("me.omico.consensus.spotless")
 }
 
-requireRootProject()
-
 consensus {
     spotless {
-        rootProject {
-            freshmark()
-            gradleProperties()
-        }
-        allprojects {
-            kotlin(
-                targets = ConsensusSpotlessTokens.Kotlin.targets + setOf(
-                    "build-logic/**/src/main/kotlin/**/*.kt",
-                ),
-                licenseHeaderFile = rootProject.file("spotless/copyright.kt").takeIf(File::exists),
-            )
-            kotlinGradle()
-        }
+        freshmark()
+        gradleProperties()
+        intelliJIDEARunConfiguration()
+        kotlin(
+            targets = ConsensusSpotlessTokens.Kotlin.targets + setOf(
+                "build-logic/*/src/**/*.kt",
+            ),
+            licenseHeaderFile = rootProject.file("spotless/copyright.kt"),
+        )
+        kotlinGradle(
+            targets = ConsensusSpotlessTokens.KotlinGradle.targets + setOf(
+                "build-logic/*/src/**/*.gradle.kts",
+            ),
+        )
+    }
+}
+
+subprojects {
+    rootProject.tasks {
+        spotlessApply { this@subprojects.tasks.findByName("spotlessApply")?.dependsOn(this) }
+        spotlessCheck { this@subprojects.tasks.findByName("spotlessApply")?.dependsOn(this) }
     }
 }
