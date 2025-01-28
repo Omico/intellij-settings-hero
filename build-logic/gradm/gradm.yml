@@ -1,13 +1,12 @@
 versions:
   changelog: "2.2.1"
   consensus: "0.18.1"
-  intellij: "1.17.4"
   kotlin: "2.0.21"
   kotlinx:
     serialization: "1.7.3"
   plugins:
     develocity: "3.19.1"
-    intellij: "2.1.0"
+    intellij: "2.2.1"
 
 repositories:
   omico:
@@ -19,7 +18,6 @@ plugins:
   gradlePluginPortal:
     com.gradle.develocity: ${versions.plugins.develocity}
     org.jetbrains.changelog: ${versions.changelog}
-    org.jetbrains.intellij: ${versions.intellij}
   noUpdates:
     org.jetbrains.kotlin.plugin.serialization: ${versions.kotlin}
 
