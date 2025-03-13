@@ -1,16 +1,22 @@
-// Copyright 2023-2024 Omico
+// Copyright 2023-2025 Omico
 // SPDX-License-Identifier: GPL-3.0-only
 package me.omico.intellij.settingsHero.profile
 
+import com.intellij.configurationStore.getExportableComponentsMap
+import com.intellij.configurationStore.getExportableItemsFromLocalStorage
+import com.intellij.util.io.createParentDirectories
 import me.omico.intellij.settingsHero.plugin.SettingsHeroPluginManager
 import me.omico.intellij.settingsHero.utility.clearDirectory
 import me.omico.intellij.settingsHero.utility.ideaConfigurationDirectory
-import me.omico.intellij.settingsHero.utility.removeIdeaConfigurationDirectoryPrefix
+import me.omico.intellij.settingsHero.utility.storageManager
 import java.nio.file.FileSystems
 import java.nio.file.Path
+import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.copyTo
+import kotlin.io.path.copyToRecursively
 import kotlin.io.path.createDirectories
 import kotlin.io.path.createFile
+import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
 import kotlin.io.path.invariantSeparatorsPathString
 import kotlin.io.path.isDirectory
@@ -57,85 +63,59 @@ internal fun newSettingsHeroProfile(name: String): SettingsHeroProfile =
 
 internal val DefaultRules: Set<String> =
     setOf(
-        "*.db",
-        "*.kdbx",
-        "*.key",
-        "*.license",
-        "*.pwd",
-        "*.txt",
-        "*.vmoptions",
-        ".DS_Store",
-        ".lock",
-        ".updated_plugins_list",
         "codestyles/Default.xml",
-        "event-log-metadata",
-        "extensions",
-        "inspection",
-        "jdbc-drivers",
-        "migration",
-        "options/*.local.xml",
-        "options/AquaNewUserFeedbackService.xml",
-        "options/AquaOldUserFeedbackService.xml",
-        "options/NewUIInfoService.xml",
-        "options/actionSummary.xml",
-        "options/features.usage.statistics.xml",
+        "options/DontShowAgainFeedbackService.xml",
+        "options/github.xml",
         "options/jdk.table.xml",
-        "options/other.xml",
-        "options/overrideFileTypes.xml",
-        "options/path.macros.xml",
-        "options/project.default.xml",
-        "options/recentProjects.xml",
-        "options/runner.layout.xml",
-        "options/settingsSync.xml",
-        "options/sshRecentConnections*.xml",
-        "options/terminal.xml",
-        "options/trusted-paths.xml",
-        "options/updates.xml",
-        "options/vcs-inputs.xml",
-        "options/window.state.xml",
-        "plugins",
-        "scratches",
-        "settingsSync",
-        "ssl",
-        "tasks",
-        "workspace",
+        "options/jdk.table.xml",
+        "options/k2-feedback.xml",
+        "options/kotlin-onboarding.xml",
+        "options/kotlin-wizard-data.xml",
     )
 
+@OptIn(ExperimentalPathApi::class)
+@Suppress("UnstableApiUsage")
 internal fun Path.saveSettings(rules: Set<String>) {
     runCatching(Path::clearDirectory)
     if (rules.isEmpty()) return
-    val filteredPaths = mutableMapOf<String, Path>()
-    filterPaths(filteredPaths, rules, ideaConfigurationDirectory)
-    filteredPaths.toSortedMap().forEach { (pathString, path) ->
-        val target = resolve(pathString)
-        target.parent.createDirectories()
-        path.copyTo(target)
+    val storageManager = storageManager()
+    val exportableComponentsMap = getExportableComponentsMap(
+        isComputePresentableNames = true,
+        storageManager = storageManager,
+        withExportable = false,
+    )
+    val exportableItems = getExportableItemsFromLocalStorage(
+        exportableItems = exportableComponentsMap,
+        storageManager = storageManager,
+    )
+    exportableItems.keys.forEach { path ->
+        val relativizedPath = ideaConfigurationDirectory.relativize(path)
+        val outputPath = resolve(relativizedPath).createParentDirectories()
+        when {
+            path.isDirectory() -> path.copyToRecursively(outputPath, followLinks = false)
+            else -> path.copyTo(outputPath)
+        }
     }
+    val filteredPaths = mutableSetOf<Path>()
+    listDirectoryEntries().forEach { path -> filterPaths(filteredPaths, rules, this, path) }
+    filteredPaths.forEach(Path::deleteIfExists)
 }
 
-private val allowedDirectories: Set<String> =
-    setOf(
-        "codestyles",
-        "colors",
-        "keymaps",
-        "options",
-    )
-
-private fun filterPaths(filteredPaths: MutableMap<String, Path>, rules: Set<String>, path: Path): Unit =
-    path.listDirectoryEntries()
-        .associateBy { it.invariantSeparatorsPathString.removeIdeaConfigurationDirectoryPrefix() }
-        .filterNot { (pathString, path) ->
-            val relativePath = ideaConfigurationDirectory.relativize(path)
-            if (allowedDirectories.any(relativePath::startsWith)) return@filterNot false
-            rules.any { rule ->
-                when {
-                    '*' in rule -> FileSystems.getDefault().getPathMatcher("glob:$rule").matches(relativePath)
-                    else -> pathString.startsWith(rule)
-                }
+@OptIn(ExperimentalPathApi::class)
+private fun filterPaths(filteredPaths: MutableSet<Path>, rules: Set<String>, root: Path, sub: Path) {
+    if (sub.isDirectory()) {
+        sub.listDirectoryEntries().forEach { filterPaths(filteredPaths, rules, root, it) }
+    } else {
+        val relativePath = root.relativize(sub)
+        val matched = rules.any { rule ->
+            when {
+                '*' in rule -> FileSystems.getDefault().getPathMatcher("glob:$rule").matches(relativePath)
+                else -> relativePath.invariantSeparatorsPathString == rule
             }
         }
-        .onEach { (_, path) -> if (path.isDirectory()) filterPaths(filteredPaths, rules, path) }
-        .let(filteredPaths::putAll)
+        if (matched) filteredPaths.add(sub)
+    }
+}
 
 private fun Path.loadAsSettingsHeroProfile(): SettingsHeroProfile =
     SettingsHeroProfile(
